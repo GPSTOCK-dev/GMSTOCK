@@ -4,8 +4,8 @@
 //  con los valores de tu proyecto en https://supabase.com
 // ============================================================
 
-const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';  // ← cambia esto
-const SUPABASE_ANON_KEY = 'TU_ANON_KEY_AQUI';                 // ← cambia esto
+const SUPABASE_URL      = 'https://qsdxxofjgodegypayaoz.supabase.co/rest/v1/';  // ← cambia esto
+const SUPABASE_ANON_KEY = 'sb_publishable_uF_-5NsqRJJFEv3MElzkpg_qFHhmXhT';                 // ← cambia esto
 
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
