@@ -399,10 +399,15 @@ function removeImage(e) {
   document.getElementById('img-preview-wrap').style.display='none';
 }
 function resetImgPanel() {
-  selImgB64=null;
-  document.getElementById('img-file-input').value='';
-  document.getElementById('img-placeholder').style.display='';
-  document.getElementById('img-preview-wrap').style.display='none';
+  selImgB64 = null;
+  
+  const input = document.getElementById('img-file-input');
+  const placeholder = document.getElementById('img-placeholder');
+  const preview = document.getElementById('img-preview-wrap');
+  
+  if (input) input.value = '';
+  if (placeholder) placeholder.style.display = '';
+  if (preview) preview.style.display = 'none';
 }
 
 /* ── TOAST ── */
