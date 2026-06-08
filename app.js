@@ -85,7 +85,48 @@ function renderTools() {
 
 /* ── FORM ACTIONS (SAVE / UPDATE) ── */
 async function saveTool() {
-  const nameInput = document.getElementById('f-name');
-  const descInput = document.getElementById('f-desc');
-  const entryInput = document.getElementById('f-entry');
-  const exitInput = document.getElementById('f
+  const name = document.getElementById('f-name').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  const entry = document.getElementById('f-entry').value || null;
+  const exit = document.getElementById('f-exit').value || null;
+  const pieces = parseInt(document.getElementById('f-pieces').value) || 0;
+
+  if (!name) {
+    showToast('El nombre es obligatorio');
+    return;
+  }
+
+  showLoading('Guardando herramienta…');
+
+  try {
+    const toolData = {
+      icon: selIcon,
+      color: document.getElementById('f-color')?.value || '#f0c040',
+      img: selImgB64,
+      name: name,
+      desc: desc,
+      entry: entry,
+      exit: exit,
+      pieces: pieces
+    };
+
+    if (editingId) {
+      await dbUpdateTool(editingId, toolData);
+      showToast('Herramienta actualizada');
+    } else {
+      await dbAddTool(toolData);
+      showToast('Herramienta agregada');
+    }
+
+    // Recargar lista completa de inmediato
+    tools = await dbLoadTools();
+    renderTools();
+    closeFormModal();
+  } catch (err) {
+    console.error("Error al guardar:", err);
+    showToast('Error de comunicación con Supabase');
+  } finally {
+    // 👈 ESTO SE EJECUTA SÍ O SÍ Y QUITA EL MENSAJE DE ESPERA DE INMEDIATO
+    hideLoading(); 
+  }
+}
