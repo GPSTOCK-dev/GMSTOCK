@@ -592,7 +592,7 @@ function hideLoading() {
   if (el) el.style.display = 'none';
 }
 
-// ── Toast ────────────────────────────────────────────────────
+
 
 function showToast(msg, ms=2500) {
   const t = document.getElementById('toast');
@@ -602,7 +602,7 @@ function showToast(msg, ms=2500) {
   t._t = setTimeout(() => t.classList.remove('show'), ms);
 }
 
-// ── Stats ────────────────────────────────────────────────────
+
 
 function updateStats() {
   const total = tools.length;
@@ -628,7 +628,7 @@ function updateWaChip() {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────
+
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -645,7 +645,7 @@ function mapRow(r) {
            pieces:r.pieces, created_at:r.created_at };
 }
 
-// ── Render ───────────────────────────────────────────────────
+
 
 function renderCards() {
   const q   = (document.getElementById('search-input').value || '').toLowerCase().trim();
@@ -722,7 +722,7 @@ function buildCard(t) {
   return card;
 }
 
-// ── WA Alert ─────────────────────────────────────────────────
+
 
 function buildWaMsg(tool) {
   const resp = wa.name ? `Hola ${wa.name},\n` : '';
@@ -738,7 +738,7 @@ function sendWaAlert(id) {
   renderCards();
 }
 
-// ── WA Modal ─────────────────────────────────────────────────
+
 
 function openWaModal() {
   document.getElementById('wa-country').value = wa.country;
@@ -783,7 +783,7 @@ function sendWaTest() {
   window.open(`https://wa.me/${country}${phone}?text=${msg}`, '_blank');
 }
 
-// ── Icon Picker ──────────────────────────────────────────────
+
 
 function buildIconPicker() {
   const c = document.getElementById('icon-selector');
@@ -848,7 +848,7 @@ function readImageFile(f) {
   document.getElementById('img-file-input').value = '';
 }
 
-// ── Form Modal ───────────────────────────────────────────────
+
 
 function resetForm() {
   ['f-name','f-desc','f-entry','f-exit','f-pieces'].forEach(id => document.getElementById(id).value = '');
