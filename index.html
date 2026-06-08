@@ -728,7 +728,7 @@ function buildCard(t) {
 function buildWaMsg(tool) {
   const resp = wa.name ? `Hola ${wa.name},\n` : '';
   const st   = tool.pieces === 0 ? '❌ *SIN STOCK*' : `⚠️ Solo quedan *${tool.pieces} piezas*`;
-  return `${resp}🔧 *Alerta de stock — CatálogoTools*\n\n📦 Herramienta: *${tool.name}*\n${st}\n\n👉 Por favor repone el inventario a la brevedad.\n\n_Mensaje automático de CatálogoTools_`;
+  return `${resp}🔧 *Alerta de herramienta — CatálogoTools*\n\n📦 Herramienta: *${tool.name}*\n${st}\n\n👉 Por favor Ing repone el inventario a la breveda!\n\n_Mensaje automático_`;
 }
 
 function sendWaAlert(id) {
