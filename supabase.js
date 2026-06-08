@@ -3,7 +3,7 @@
 //  Para GitHub Pages: reemplaza SUPABASE_ANON_KEY con tu clave real
 // ============================================================
 
-const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co';
+const SUPABASE_URL      = 'https://qsdxxofjgodegypayaoz.supabase.co/rest/v1/';
 const SUPABASE_ANON_KEY = 'sb_publishable_uF_-5NsqRJJFEv3MElzkpg_qFHhmXhT'; // 👈 Pega aquí tu clave completa desde Supabase → Settings → API
 
 // Inicialización usando la CDN de Supabase cargada en index.html
