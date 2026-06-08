@@ -223,30 +223,25 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
   justify-content:center;gap:8px;transition:opacity .15s}
 .btn-wa-full:active{opacity:.85}
 
-/* PICKER TABS */
-.picker-tabs{display:flex;gap:6px;margin-bottom:10px}
-.picker-tab{flex:1;padding:8px;border:1.5px solid var(--border);border-radius:8px;
-  background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;
-  font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center}
-.picker-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(240,192,64,.08)}
+/* ICON PICKER */
+.icon-picker-wrap{display:flex;flex-direction:column;gap:12px}
+.icon-preview-row{display:flex;align-items:center;gap:12px;
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.icon-preview-box{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;flex-shrink:0;transition:background .2s}
+.icon-preview-label{font-size:12px;color:var(--text-muted);line-height:1.5}
+.icon-preview-label strong{display:block;font-size:13.5px;color:var(--text);font-weight:600;margin-bottom:2px}
+.picker-section-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--text-muted);font-weight:600;margin-bottom:7px}
 .icon-selector{display:flex;gap:7px;flex-wrap:wrap}
-.icon-opt{width:44px;height:44px;border-radius:10px;border:2px solid var(--border);
-  background:var(--card);font-size:19px;cursor:pointer;
+.icon-opt{width:42px;height:42px;border-radius:10px;border:2px solid var(--border);
+  background:var(--card);font-size:20px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
 .icon-opt.selected{border-color:var(--accent);background:rgba(240,192,64,.12)}
-.img-upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);
-  padding:18px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
-.img-upload-area:hover,.img-upload-area.dragover{border-color:var(--accent);background:rgba(240,192,64,.05)}
-.img-upload-area input{display:none}
-.img-preview-wrap{position:relative;display:inline-block}
-.img-preview{width:64px;height:64px;border-radius:12px;object-fit:cover;
-  border:2px solid var(--accent);display:block}
-.img-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;
-  background:var(--danger);border:none;border-radius:50%;color:#fff;
-  font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.upload-placeholder{color:var(--text-muted);font-size:13px}
-.upload-placeholder .up-icon{font-size:28px;margin-bottom:6px}
-.upload-placeholder p{font-size:12px}
+.color-selector{display:flex;gap:8px;flex-wrap:wrap}
+.color-opt{width:30px;height:30px;border-radius:50%;border:2.5px solid transparent;
+  cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0}
+.color-opt.selected{border-color:var(--text);transform:scale(1.18)}
 
 /* DELETE CONFIRM */
 .confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);
@@ -422,28 +417,22 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title">Nueva <span>Herramienta</span></div>
     <div class="form-group">
-      <label class="form-label">Imagen / Ícono</label>
-      <div class="picker-tabs">
-        <button type="button" class="picker-tab active" id="tab-icon" onclick="switchTab('icon')">🔧 Ícono emoji</button>
-        <button type="button" class="picker-tab" id="tab-img" onclick="switchTab('img')">🖼️ Subir imagen</button>
-      </div>
-      <div id="panel-icon"><div class="icon-selector" id="icon-selector"></div></div>
-      <div id="panel-img" style="display:none">
-        <div class="img-upload-area" id="upload-area"
-             onclick="document.getElementById('img-file-input').click()"
-             ondragover="event.preventDefault();this.classList.add('dragover')"
-             ondragleave="this.classList.remove('dragover')"
-             ondrop="handleDrop(event)">
-          <input type="file" id="img-file-input" accept="image/*" onchange="handleFileSelect(event)">
-          <div id="img-placeholder" class="upload-placeholder">
-            <div class="up-icon">📁</div>
-            <p>Toca para seleccionar imagen</p>
-            <p style="font-size:11px;margin-top:3px;opacity:.6">JPG, PNG, WEBP</p>
+      <label class="form-label">Ícono y color</label>
+      <div class="icon-picker-wrap">
+        <div class="icon-preview-row">
+          <div class="icon-preview-box" id="icon-preview-box">🔧</div>
+          <div class="icon-preview-label">
+            <strong>Vista previa</strong>
+            Selecciona un ícono y color de fondo
           </div>
-          <div id="img-preview-wrap" class="img-preview-wrap" style="display:none">
-            <img id="img-preview" class="img-preview" src="" alt="preview">
-            <button type="button" class="img-remove" onclick="removeImage(event)">✕</button>
-          </div>
+        </div>
+        <div>
+          <div class="picker-section-label">Ícono</div>
+          <div class="icon-selector" id="icon-selector"></div>
+        </div>
+        <div>
+          <div class="picker-section-label">Color de fondo</div>
+          <div class="color-selector" id="color-selector"></div>
         </div>
       </div>
     </div>
@@ -571,14 +560,24 @@ async function dbSaveWaConfig(c) {
 //  APP LOGIC
 // ============================================================
 
-const ICONS = ['🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜','🔑','🪤','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲'];
-const COLORS = ['#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6','#60a5fa','#fbbf24'];
+const ICONS = [
+  '🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜',
+  '🔑','🪤','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲',
+  '🪝','🔗','⛏️','🪣','🧪','🔮','📦','🗂️','🖥️','📡',
+  '🚿','🪠','🔦','🕯️','🧯','🪑','🛏️','🚪','🪟','🧹',
+  '🧺','🧻','🚰','🪤','🔐','🗝️','🪤','⚗️','🧫','🧬'
+];
+const COLORS = [
+  '#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6',
+  '#60a5fa','#fbbf24','#fb923c','#a3e635','#22d3ee','#e879f9',
+  '#f87171','#818cf8','#2dd4bf','#facc15'
+];
 const STOCK_LIMIT = 20;
 
 let tools = [], wa = { country:'52', phone:'', name:'', auto:true, btn:true };
 let alertedIds = JSON.parse(localStorage.getItem('ct-alerted') || '[]');
 let editingId = null, deleteId = null;
-let selIcon = ICONS[0], selImgB64 = null, pickerMode = 'icon';
+let selIcon = ICONS[0], selColor = COLORS[0];
 
 // ── Loading ──────────────────────────────────────────────────
 
@@ -790,87 +789,70 @@ function sendWaTest() {
   window.open(`https://wa.me/${country}${phone}?text=${msg}`, '_blank');
 }
 
-// ── Icon Picker ──────────────────────────────────────────────
+// ── Icon + Color Picker ──────────────────────────────────────
+
+function updateIconPreview() {
+  const box = document.getElementById('icon-preview-box');
+  if (box) {
+    box.textContent = selIcon;
+    box.style.background = selColor + '33';
+    box.style.color = selColor;
+  }
+}
 
 function buildIconPicker() {
   const c = document.getElementById('icon-selector');
+  if (!c) return;
   c.innerHTML = '';
   ICONS.forEach(icon => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'icon-opt' + (icon === selIcon ? ' selected' : '');
     b.textContent = icon;
-    b.onclick = () => { selIcon = icon; c.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('selected')); b.classList.add('selected'); };
+    b.onclick = () => {
+      selIcon = icon;
+      c.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      updateIconPreview();
+    };
     c.appendChild(b);
   });
 }
 
-function switchTab(tab) {
-  pickerMode = tab;
-  document.getElementById('tab-icon').classList.toggle('active', tab==='icon');
-  document.getElementById('tab-img').classList.toggle('active',  tab==='img');
-  document.getElementById('panel-icon').style.display = tab==='icon' ? '' : 'none';
-  document.getElementById('panel-img').style.display  = tab==='img'  ? '' : 'none';
-}
-
-function handleFileSelect(e) { if (e.target.files[0]) readImageFile(e.target.files[0]); }
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('upload-area').classList.remove('dragover');
-  const f = e.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) readImageFile(f);
-}
-function readImageFile(f) {
-  const r = new FileReader();
-  r.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      // Redimensionar a máximo 400x400px
-      const MAX = 400;
-      let w = img.width, h = img.height;
-      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
-      else       { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
-
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-
-      // Comprimir a JPEG calidad 70% (~10-30KB)
-      selImgB64 = canvas.toDataURL('image/jpeg', 0.70);
-
-      document.getElementById('img-placeholder').style.display = 'none';
-      document.getElementById('img-preview-wrap').style.display = '';
-      document.getElementById('img-preview').src = selImgB64;
+function buildColorPicker() {
+  const c = document.getElementById('color-selector');
+  if (!c) return;
+  c.innerHTML = '';
+  COLORS.forEach(color => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'color-opt' + (color === selColor ? ' selected' : '');
+    b.style.background = color;
+    b.title = color;
+    b.onclick = () => {
+      selColor = color;
+      c.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      updateIconPreview();
     };
-    img.src = ev.target.result;
-  };
-  r.readAsDataURL(f);
-}
-  function removeImage(e) {
-  e.stopPropagation();
-  selImgB64 = null;
-  document.getElementById('img-placeholder').style.display = '';
-  document.getElementById('img-preview-wrap').style.display = 'none';
-  document.getElementById('img-preview').src = '';
-  document.getElementById('img-file-input').value = '';
+    c.appendChild(b);
+  });
 }
 
 // ── Form Modal ───────────────────────────────────────────────
 
 function resetForm() {
   ['f-name','f-desc','f-entry','f-exit','f-pieces'].forEach(id => document.getElementById(id).value = '');
-  selImgB64 = null; selIcon = ICONS[0];
-  document.getElementById('img-placeholder').style.display = '';
-  document.getElementById('img-preview-wrap').style.display = 'none';
-  document.getElementById('img-preview').src = '';
-  document.getElementById('img-file-input').value = '';
-  switchTab('icon');
+  selIcon = ICONS[0];
+  selColor = COLORS[0];
   buildIconPicker();
+  buildColorPicker();
+  updateIconPreview();
 }
 
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').innerHTML = 'agrega <span>Herramienta</span>';
+  document.getElementById('modal-title').innerHTML = 'Nueva <span>Herramienta</span>';
   resetForm();
   document.getElementById('form-modal').classList.add('open');
 }
@@ -878,24 +860,18 @@ function openAddModal() {
 function openEditModal(id) {
   const t = tools.find(x => x.id === id);
   if (!t) return;
-  editingId = id; selIcon = t.icon || ICONS[0]; selImgB64 = t.img || null;
+  editingId = id;
+  selIcon  = t.icon  || ICONS[0];
+  selColor = t.color || COLORS[0];
   document.getElementById('modal-title').innerHTML = 'Editar <span>Herramienta</span>';
   document.getElementById('f-name').value   = t.name  || '';
   document.getElementById('f-desc').value   = t.desc  || '';
   document.getElementById('f-entry').value  = t.entry || '';
   document.getElementById('f-exit').value   = t.exit  || '';
   document.getElementById('f-pieces').value = t.pieces ?? '';
-  if (t.img) {
-    document.getElementById('img-placeholder').style.display = 'none';
-    document.getElementById('img-preview-wrap').style.display = '';
-    document.getElementById('img-preview').src = t.img;
-    switchTab('img');
-  } else {
-    document.getElementById('img-placeholder').style.display = '';
-    document.getElementById('img-preview-wrap').style.display = 'none';
-    switchTab('icon');
-  }
   buildIconPicker();
+  buildColorPicker();
+  updateIconPreview();
   document.getElementById('form-modal').classList.add('open');
 }
 
@@ -908,16 +884,14 @@ async function saveTool() {
   if (!name)               { showToast('⚠️ El nombre es obligatorio'); return; }
   if (isNaN(pieces)||pieces<0) { showToast('⚠️ Cantidad inválida'); return; }
 
-  const orig  = editingId ? tools.find(t => t.id === editingId) : null;
-  const color = orig?.color || COLORS[Math.floor(Math.random() * COLORS.length)];
-  const data  = {
-    icon:   pickerMode==='icon' ? selIcon   : null,
-    color:  pickerMode==='icon' ? color     : null,
-    img:    pickerMode==='img'  ? selImgB64 : null,
+  const data = {
+    icon:  selIcon,
+    color: selColor,
+    img:   null,
     name,
-    desc:   document.getElementById('f-desc').value.trim(),
-    entry:  document.getElementById('f-entry').value || null,
-    exit:   document.getElementById('f-exit').value  || null,
+    desc:  document.getElementById('f-desc').value.trim(),
+    entry: document.getElementById('f-entry').value || null,
+    exit:  document.getElementById('f-exit').value  || null,
     pieces
   };
 
