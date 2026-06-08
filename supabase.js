@@ -3,9 +3,10 @@
 //  Para GitHub Pages: reemplaza SUPABASE_ANON_KEY con tu clave real
 // ============================================================
 
-const SUPABASE_URL      = 'https://qsdxxofjgodegypayaoz.supabase.co/rest/v1/';
-const SUPABASE_ANON_KEY = 'sb_publishable_uF_-5NsqRJJFEv3MElzkpg_qFHhmXhT'; // 👈 Copia tu clave desde Supabase > Settings > API > anon public
+const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_CLAVE_ANON_AQUI'; // 👈 Pega aquí tu clave completa desde Supabase → Settings → API
 
+// Inicialización usando la CDN de Supabase cargada en index.html
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── TOOLS ──────────────────────────────────────────────────────
