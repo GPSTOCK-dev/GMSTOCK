@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CatálogoTools</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="CSS/styles.css">
+<!-- CORRECCIÓN: ruta plana (mismo directorio que index.html) -->
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -56,6 +57,7 @@
 <!-- CONTENT -->
 <main class="content">
   <div class="section-title" id="section-label">Todas las herramientas</div>
+  <!-- CORRECCIÓN: el contenedor usa el id "cards-container" que espera app.js -->
   <div id="cards-container"></div>
   <div class="empty-state" id="empty-state">
     <div class="empty-icon">🔍</div>
@@ -175,8 +177,8 @@
     <div class="form-group">
       <label class="form-label">Imagen / Ícono</label>
       <div class="picker-tabs">
-        <button class="picker-tab active" id="tab-icon" onclick="switchTab('icon')">🔧 Ícono emoji</button>
-        <button class="picker-tab" id="tab-img"  onclick="switchTab('img')">🖼️ Subir imagen</button>
+        <button type="button" class="picker-tab active" id="tab-icon" onclick="switchTab('icon')">🔧 Ícono emoji</button>
+        <button type="button" class="picker-tab" id="tab-img" onclick="switchTab('img')">🖼️ Subir imagen</button>
       </div>
       <div id="panel-icon"><div class="icon-selector" id="icon-selector"></div></div>
       <div id="panel-img" style="display:none">
@@ -193,7 +195,7 @@
           </div>
           <div id="img-preview-wrap" class="img-preview-wrap" style="display:none">
             <img id="img-preview" class="img-preview" src="" alt="preview">
-            <button class="img-remove" onclick="removeImage(event)">✕</button>
+            <button type="button" class="img-remove" onclick="removeImage(event)">✕</button>
           </div>
         </div>
       </div>
@@ -222,8 +224,8 @@
       <input class="form-input" id="f-pieces" type="number" min="0" placeholder="0">
     </div>
     <div class="form-btns">
-      <button class="btn-cancel" onclick="closeFormModal()">Cancelar</button>
-      <button class="btn-primary" onclick="saveTool()">Guardar</button>
+      <button type="button" class="btn-cancel" onclick="closeFormModal()">Cancelar</button>
+      <button type="button" class="btn-primary" onclick="saveTool()">Guardar</button>
     </div>
   </div>
 </div>
@@ -235,7 +237,7 @@
     <h3>¿Eliminar herramienta?</h3>
     <p>Esta acción no se puede deshacer.</p>
     <div class="confirm-btns">
-      <button class="btn-no"  onclick="closeConfirmModal()">No, cancelar</button>
+      <button class="btn-no" onclick="closeConfirmModal()">No, cancelar</button>
       <button class="btn-yes" onclick="confirmDelete()">Sí, eliminar</button>
     </div>
   </div>
@@ -244,10 +246,10 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- Supabase SDK -->
+<!-- SCRIPTS: Supabase CDN primero, luego los propios -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-  <script src="supabase.js"></script>
-  <script src="app.js"></script>
+<script src="supabase.js"></script>
+<script src="app.js"></script>
+
 </body>
 </html>
