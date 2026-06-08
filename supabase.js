@@ -30,8 +30,9 @@ async function dbLoadTools() {
       desc:       row.tool_desc,
       entry:      row.entry,
       exit:       row.exit_date,
-      pieces:     row.pieces,
-      created_at: row.created_at
+      pieces:      row.pieces,
+      stock_limit: row.stock_limit ?? 20,
+      created_at:  row.created_at
     }));
   } catch (e) {
     console.error('dbLoadTools exception:', e);
@@ -52,7 +53,8 @@ async function dbAddTool(tool) {
         tool_desc: tool.desc      || null,
         entry:     tool.entry     || null,
         exit_date: tool.exit      || null,
-        pieces:    tool.pieces    ?? 0
+        pieces:    tool.pieces    ?? 0,
+        stock_limit: tool.stock_limit ?? 20
       }])
       .select()
       .single();
@@ -78,7 +80,8 @@ async function dbUpdateTool(id, tool) {
         tool_desc: tool.desc      || null,
         entry:     tool.entry     || null,
         exit_date: tool.exit      || null,
-        pieces:    tool.pieces    ?? 0
+        pieces:    tool.pieces    ?? 0,
+        stock_limit: tool.stock_limit ?? 20
       })
       .eq('id', id)
       .select()
