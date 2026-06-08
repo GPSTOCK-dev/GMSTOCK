@@ -5,12 +5,290 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CatálogoTools</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- CORRECCIÓN: ruta plana (mismo directorio que index.html) -->
-<link rel="stylesheet" href="styles.css">
+<style>
+:root {
+  --bg:#0f0f13; --surface:#17171e; --card:#1e1e28;
+  --accent:#f0c040; --text:#f0ede8; --text-muted:#8b8a96;
+  --border:#2a2a38; --available:#3ddc84; --warning:#ffa630;
+  --danger:#ff4d6d; --whatsapp:#25D366; --radius:18px; --radius-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
+  min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden}
+
+/* HEADER */
+.app-header{background:var(--surface);padding:20px 20px 0;
+  position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;letter-spacing:-.5px}
+.logo-text span{color:var(--accent)}
+.header-actions{display:flex;gap:8px}
+.icon-btn{width:40px;height:40px;border:none;border-radius:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s,opacity .15s;flex-shrink:0}
+.icon-btn:active{transform:scale(.92);opacity:.85}
+.btn-wa{background:rgba(37,211,102,.15);border:1.5px solid rgba(37,211,102,.35)}
+.btn-add{background:var(--accent);color:#0f0f13;font-size:22px;font-weight:700}
+
+/* WA STATUS CHIP */
+.wa-status-chip{display:flex;align-items:center;gap:6px;
+  background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);
+  border-radius:50px;padding:5px 12px;margin-bottom:12px;cursor:pointer;
+  transition:background .15s}
+.wa-status-chip:active{background:rgba(37,211,102,.18)}
+.wa-status-chip.unconfigured{background:rgba(255,166,48,.08);border-color:rgba(255,166,48,.25)}
+.ws-dot{width:7px;height:7px;border-radius:50%;background:var(--whatsapp);flex-shrink:0}
+.wa-status-chip.unconfigured .ws-dot{background:var(--warning)}
+.ws-label{font-size:12px;color:var(--whatsapp);flex:1}
+.wa-status-chip.unconfigured .ws-label{color:var(--warning)}
+.ws-edit{font-size:11px;color:var(--text-muted);margin-left:4px}
+
+/* STATS BAR */
+.stats-bar{display:flex;gap:10px;padding:10px 0 14px;overflow-x:auto;scrollbar-width:none}
+.stats-bar::-webkit-scrollbar{display:none}
+.stat-pill{flex-shrink:0;background:var(--card);border:1px solid var(--border);
+  border-radius:50px;padding:7px 13px;display:flex;align-items:center;
+  gap:7px;font-size:12.5px;color:var(--text-muted)}
+.stat-pill .num{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+.stat-pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* SEARCH */
+.search-wrap{padding:14px 20px 0}
+.search-box{display:flex;align-items:center;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:10px 14px;gap:10px;transition:border-color .2s}
+.search-box:focus-within{border-color:var(--accent)}
+.search-box svg{color:var(--text-muted);flex-shrink:0}
+.search-box input{background:none;border:none;outline:none;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:14px;width:100%}
+.search-box input::placeholder{color:var(--text-muted)}
+
+/* CONTENT */
+.content{padding:16px 20px 40px}
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12.5px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+
+/* TOOL CARD */
+.tool-card{background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);margin-bottom:14px;overflow:hidden;
+  transition:transform .2s;animation:cardIn .35s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.tool-card:active{transform:scale(.985)}
+.tool-card.alert-stock{border-color:rgba(255,166,48,.45)}
+
+.card-header{display:flex;align-items:flex-start;gap:12px;padding:16px 16px 12px}
+.tool-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden}
+.tool-icon img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.card-title-wrap{flex:1;min-width:0}
+.tool-name{font-family:'Syne',sans-serif;font-weight:700;font-size:15.5px;
+  margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool-desc{font-size:12px;color:var(--text-muted);line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+.pieces-badge{flex-shrink:0;font-family:'Syne',sans-serif;font-weight:700;
+  font-size:11.5px;padding:4px 9px;border-radius:50px;text-align:center;line-height:1.4;
+  border:1px solid rgba(61,220,132,.3);background:rgba(61,220,132,.1);color:var(--available)}
+.pieces-badge.alert{background:rgba(255,166,48,.13);border-color:rgba(255,166,48,.4);color:var(--warning)}
+.pieces-badge.low  {background:rgba(255,166,48,.1); border-color:rgba(255,166,48,.3);color:var(--warning)}
+.pieces-badge.empty{background:rgba(255,77,109,.1); border-color:rgba(255,77,109,.3);color:var(--danger)}
+
+/* STOCK ALERT ROW */
+.stock-alert-row{display:flex;align-items:center;gap:8px;
+  background:rgba(255,166,48,.06);border-top:1px solid rgba(255,166,48,.18);
+  padding:9px 16px}
+.stock-alert-row .sa-text{font-size:11.5px;color:var(--warning);flex:1;line-height:1.4}
+.wa-send-btn{display:flex;align-items:center;gap:5px;background:var(--whatsapp);
+  border:none;border-radius:8px;padding:7px 12px;color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;flex-shrink:0;transition:opacity .15s,transform .15s;white-space:nowrap}
+.wa-send-btn:active{opacity:.8;transform:scale(.95)}
+.wa-send-btn.sent{background:#1a9e4e}
+.wa-send-btn svg{flex-shrink:0}
+
+/* WA NOT CONFIGURED */
+.wa-not-set{display:flex;align-items:center;gap:8px;
+  background:rgba(255,166,48,.06);border-top:1px solid rgba(255,166,48,.18);
+  padding:8px 14px;cursor:pointer}
+.wa-not-set span{font-size:11.5px;color:var(--warning)}
+.wa-not-set .setup-link{font-size:11.5px;color:var(--accent);font-weight:600;margin-left:auto;white-space:nowrap}
+
+/* CARD DATES */
+.card-dates{display:flex;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
+.date-chip{display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.04);border-radius:7px;padding:5px 9px;font-size:11px;color:var(--text-muted)}
+.date-chip .label{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;opacity:.7;margin-right:2px}
+.date-chip .value{color:var(--text);font-weight:500}
+
+/* CARD ACTIONS */
+.card-actions{display:flex;border-top:1px solid var(--border)}
+.action-btn{flex:1;padding:12px;border:none;background:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:background .15s}
+.action-btn:first-child{border-right:1px solid var(--border)}
+.action-btn.edit{color:var(--accent)}
+.action-btn.delete{color:var(--danger)}
+.action-btn:active{background:rgba(255,255,255,.04)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;display:none}
+.empty-state.show{display:block}
+.empty-icon{font-size:50px;margin-bottom:14px;opacity:.5}
+.empty-state h3{font-family:'Syne',sans-serif;font-size:15px;color:var(--text-muted);margin-bottom:5px}
+.empty-state p{font-size:12.5px;color:var(--text-muted);opacity:.7}
+
+/* MODALS (bottom sheet) */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);
+  backdrop-filter:blur(5px);z-index:200;display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--surface);width:100%;max-width:430px;margin:0 auto;
+  border-radius:24px 24px 0 0;padding:20px 20px 44px;
+  transform:translateY(30px);transition:transform .3s cubic-bezier(.2,.8,.3,1);
+  max-height:92vh;overflow-y:auto}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:6px}
+.modal-title span{color:var(--accent)}
+.modal-subtitle{font-size:12.5px;color:var(--text-muted);margin-bottom:20px;line-height:1.5}
+
+/* FORM */
+.form-group{margin-bottom:15px}
+.form-label{display:block;font-size:11.5px;font-weight:500;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.form-input{width:100%;background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color .2s;resize:none}
+.form-input:focus{border-color:var(--accent)}
+.form-row{display:flex;gap:10px}
+.form-row .form-group{flex:1}
+
+/* PHONE INPUT */
+.phone-group{display:flex;gap:8px;align-items:stretch}
+.phone-flag{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:0 12px;display:flex;align-items:center;gap:5px;
+  font-size:13px;white-space:nowrap;color:var(--text-muted);flex-shrink:0}
+.phone-flag select{background:none;border:none;outline:none;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;padding:0}
+.phone-flag select option{background:#1e1e28}
+
+/* WA CONFIG CARD */
+.wa-config-card{background:rgba(37,211,102,.06);border:1.5px solid rgba(37,211,102,.2);
+  border-radius:var(--radius-sm);padding:14px;margin-bottom:16px}
+.wa-config-card .wcc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.wa-config-card .wcc-icon{font-size:22px}
+.wa-config-card .wcc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--whatsapp)}
+.wa-config-card .wcc-sub{font-size:11.5px;color:var(--text-muted);line-height:1.5}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info .ti-label{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:2px}
+.toggle-info .ti-sub{font-size:11.5px;color:var(--text-muted)}
+.toggle{position:relative;width:46px;height:26px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:13px;
+  cursor:pointer;transition:background .2s}
+.toggle input:checked + .toggle-track{background:var(--whatsapp)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;
+  background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.toggle input:checked ~ .toggle-thumb{transform:translateX(20px)}
+
+/* MESSAGE PREVIEW */
+.msg-preview{background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-top:10px}
+.msg-preview .mp-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--whatsapp);margin-bottom:8px;font-weight:600}
+.msg-preview .mp-bubble{background:rgba(37,211,102,.12);border-radius:12px 12px 0 12px;
+  padding:10px 12px;font-size:12.5px;line-height:1.6;color:var(--text)}
+
+/* FORM BUTTONS */
+.form-btns{display:flex;gap:10px;margin-top:20px}
+.btn-cancel{flex:1;padding:14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn-cancel:active{background:rgba(255,255,255,.04)}
+.btn-primary{flex:2;padding:14px;border:none;border-radius:var(--radius-sm);
+  background:var(--accent);color:#0f0f13;font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .15s}
+.btn-primary:active{opacity:.85;transform:scale(.97)}
+.btn-wa-full{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);
+  background:var(--whatsapp);color:#fff;font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;gap:8px;transition:opacity .15s}
+.btn-wa-full:active{opacity:.85}
+
+/* PICKER TABS */
+.picker-tabs{display:flex;gap:6px;margin-bottom:10px}
+.picker-tab{flex:1;padding:8px;border:1.5px solid var(--border);border-radius:8px;
+  background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;
+  font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center}
+.picker-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(240,192,64,.08)}
+.icon-selector{display:flex;gap:7px;flex-wrap:wrap}
+.icon-opt{width:44px;height:44px;border-radius:10px;border:2px solid var(--border);
+  background:var(--card);font-size:19px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
+.icon-opt.selected{border-color:var(--accent);background:rgba(240,192,64,.12)}
+.img-upload-area{border:2px dashed var(--border);border-radius:var(--radius-sm);
+  padding:18px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+.img-upload-area:hover,.img-upload-area.dragover{border-color:var(--accent);background:rgba(240,192,64,.05)}
+.img-upload-area input{display:none}
+.img-preview-wrap{position:relative;display:inline-block}
+.img-preview{width:64px;height:64px;border-radius:12px;object-fit:cover;
+  border:2px solid var(--accent);display:block}
+.img-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;
+  background:var(--danger);border:none;border-radius:50%;color:#fff;
+  font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.upload-placeholder{color:var(--text-muted);font-size:13px}
+.upload-placeholder .up-icon{font-size:28px;margin-bottom:6px}
+.upload-placeholder p{font-size:12px}
+
+/* DELETE CONFIRM */
+.confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);
+  backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;
+  justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.confirm-modal.open{opacity:1;pointer-events:all}
+.confirm-box{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;width:100%;max-width:320px;
+  text-align:center;transform:scale(.9);transition:transform .25s cubic-bezier(.2,.8,.3,1)}
+.confirm-modal.open .confirm-box{transform:scale(1)}
+.confirm-icon{font-size:40px;margin-bottom:12px}
+.confirm-box h3{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:8px}
+.confirm-box p{font-size:13px;color:var(--text-muted);margin-bottom:20px}
+.confirm-btns{display:flex;gap:10px}
+.btn-no{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.btn-yes{flex:1;padding:12px;border:none;border-radius:var(--radius-sm);
+  background:var(--danger);color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:50px;padding:12px 20px;
+  font-size:13px;font-weight:500;white-space:nowrap;
+  opacity:0;transition:opacity .2s,transform .2s;
+  z-index:500;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* LOADING STATE */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:1000;gap:12px}
+.loading-overlay.hidden{display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Syne',sans-serif;font-size:13px;color:var(--text-muted)}
+</style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="app-header">
   <div class="header-top">
     <div class="logo">
@@ -27,15 +305,11 @@
       <button class="icon-btn btn-add" onclick="openAddModal()">+</button>
     </div>
   </div>
-
-  <!-- WA Status chip -->
   <div class="wa-status-chip" id="wa-status-chip" onclick="openWaModal()">
     <div class="ws-dot"></div>
     <span class="ws-label" id="ws-label">Cargando…</span>
     <span class="ws-edit">Editar ›</span>
   </div>
-
-  <!-- Stats bar -->
   <div class="stats-bar">
     <div class="stat-pill"><div class="dot" style="background:var(--accent)"></div>Total: <span class="num" id="st-total">0</span></div>
     <div class="stat-pill"><div class="dot" style="background:var(--available)"></div>OK: <span class="num" id="st-ok">0</span></div>
@@ -44,7 +318,6 @@
   </div>
 </header>
 
-<!-- SEARCH -->
 <div class="search-wrap">
   <div class="search-box">
     <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -54,10 +327,8 @@
   </div>
 </div>
 
-<!-- CONTENT -->
 <main class="content">
   <div class="section-title" id="section-label">Todas las herramientas</div>
-  <!-- CORRECCIÓN: el contenedor usa el id "cards-container" que espera app.js -->
   <div id="cards-container"></div>
   <div class="empty-state" id="empty-state">
     <div class="empty-icon">🔍</div>
@@ -66,24 +337,20 @@
   </div>
 </main>
 
-<!-- MODAL: WHATSAPP CONFIG -->
+<!-- MODAL: WHATSAPP -->
 <div class="modal-overlay" id="wa-modal" onclick="closeWaOnOverlay(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title">Alertas por <span style="color:var(--whatsapp)">WhatsApp</span></div>
-    <div class="modal-subtitle">
-      Configura el número que recibirá automáticamente un mensaje cuando cualquier herramienta llegue a <strong style="color:var(--warning)">20 piezas o menos</strong>.
-    </div>
-
+    <div class="modal-subtitle">Configura el número que recibirá un mensaje cuando una herramienta llegue a <strong style="color:var(--warning)">20 piezas o menos</strong>.</div>
     <div class="wa-config-card">
       <div class="wcc-top">
         <span class="wcc-icon">📲</span>
         <div>
           <div class="wcc-title">Número de alerta</div>
-          <div class="wcc-sub">Recibirá el aviso de stock bajo de forma automática</div>
+          <div class="wcc-sub">Recibirá el aviso de stock bajo automáticamente</div>
         </div>
       </div>
-
       <div class="form-group" style="margin-bottom:10px">
         <label class="form-label">Código de país + número</label>
         <div class="phone-group">
@@ -110,70 +377,50 @@
               <option value="598">UY +598</option>
             </select>
           </div>
-          <input class="form-input" id="wa-phone" type="tel"
-            placeholder="Ej: 5512345678" oninput="updateMsgPreview()"
-            style="flex:1;margin:0">
+          <input class="form-input" id="wa-phone" type="tel" placeholder="Ej: 5512345678" oninput="updateMsgPreview()" style="flex:1;margin:0">
         </div>
       </div>
-
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Nombre del responsable</label>
-        <input class="form-input" id="wa-name" type="text"
-          placeholder="Ej: Encargado de Almacén" oninput="updateMsgPreview()">
+        <input class="form-input" id="wa-name" type="text" placeholder="Ej: Encargado de Almacén" oninput="updateMsgPreview()">
       </div>
     </div>
-
     <div style="margin-bottom:16px">
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="ti-label">Alerta automática al guardar</div>
-          <div class="ti-sub">Envía aviso si las piezas quedan ≤ 20 al guardar una herramienta</div>
+          <div class="ti-sub">Envía aviso si las piezas quedan ≤ 20 al guardar</div>
         </div>
-        <label class="toggle">
-          <input type="checkbox" id="tog-auto" checked>
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </label>
+        <label class="toggle"><input type="checkbox" id="tog-auto" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
       </div>
       <div class="toggle-row">
         <div class="toggle-info">
           <div class="ti-label">Botón "Avisar" en tarjetas</div>
-          <div class="ti-sub">Muestra acceso rápido en cada herramienta con stock bajo</div>
+          <div class="ti-sub">Muestra acceso rápido en herramientas con stock bajo</div>
         </div>
-        <label class="toggle">
-          <input type="checkbox" id="tog-btn" checked>
-          <div class="toggle-track"></div>
-          <div class="toggle-thumb"></div>
-        </label>
+        <label class="toggle"><input type="checkbox" id="tog-btn" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
       </div>
     </div>
-
     <div class="msg-preview">
       <div class="mp-label">📩 Vista previa del mensaje</div>
       <div class="mp-bubble" id="msg-preview-text">—</div>
     </div>
-
     <div class="form-btns">
       <button class="btn-cancel" onclick="closeWaModal()">Cancelar</button>
       <button class="btn-primary" onclick="saveWaConfig()">Guardar</button>
     </div>
-
     <button class="btn-wa-full" style="margin-top:10px" onclick="sendWaTest()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
-        <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.979-1.304A9.963 9.963 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 11.999 2zm.001 18a7.946 7.946 0 01-4.291-1.254l-.308-.183-3.172.831.845-3.083-.2-.317A7.945 7.945 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/>
-      </svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.979-1.304A9.963 9.963 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 11.999 2zm.001 18a7.946 7.946 0 01-4.291-1.254l-.308-.183-3.172.831.845-3.083-.2-.317A7.945 7.945 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/></svg>
       Enviar mensaje de prueba
     </button>
   </div>
 </div>
 
-<!-- MODAL: ADD / EDIT TOOL -->
+<!-- MODAL: ADD / EDIT -->
 <div class="modal-overlay" id="form-modal" onclick="closeFormOnOverlay(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title">Nueva <span>Herramienta</span></div>
-
     <div class="form-group">
       <label class="form-label">Imagen / Ícono</label>
       <div class="picker-tabs">
@@ -191,7 +438,7 @@
           <div id="img-placeholder" class="upload-placeholder">
             <div class="up-icon">📁</div>
             <p>Toca para seleccionar imagen</p>
-            <p style="font-size:11px;margin-top:3px;opacity:.6">JPG, PNG, WEBP · se recorta a 44×44 px</p>
+            <p style="font-size:11px;margin-top:3px;opacity:.6">JPG, PNG, WEBP</p>
           </div>
           <div id="img-preview-wrap" class="img-preview-wrap" style="display:none">
             <img id="img-preview" class="img-preview" src="" alt="preview">
@@ -200,7 +447,6 @@
         </div>
       </div>
     </div>
-
     <div class="form-group">
       <label class="form-label">Nombre de la herramienta</label>
       <input class="form-input" id="f-name" type="text" placeholder="Ej: Taladro Percutor">
@@ -243,13 +489,481 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- SCRIPTS: Supabase CDN primero, luego los propios -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="app.js"></script>
+<script>
+// ============================================================
+//  CONFIGURACIÓN SUPABASE — pon tus datos aquí
+// ============================================================
+const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co';
+const SUPABASE_ANON_KEY = 'TU_CLAVE_ANON_AQUI'; // 👈 Copia tu clave desde Supabase > Settings > API > anon public
 
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── DB: TOOLS ───────────────────────────────────────────────
+
+async function dbLoadTools() {
+  try {
+    const { data, error } = await db.from('tools').select('*').order('created_at', { ascending: false });
+    if (error) { console.error('dbLoadTools:', error); return []; }
+    return (data || []).map(r => ({
+      id: r.id, icon: r.icon, color: r.color, img: r.img,
+      name: r.tool_name, desc: r.tool_desc,
+      entry: r.entry, exit: r.exit_date,
+      pieces: r.pieces, created_at: r.created_at
+    }));
+  } catch(e) { console.error(e); return []; }
+}
+
+async function dbAddTool(t) {
+  try {
+    const { data, error } = await db.from('tools').insert([{
+      icon: t.icon||null, color: t.color||null, img: t.img||null,
+      tool_name: t.name, tool_desc: t.desc||null,
+      entry: t.entry||null, exit_date: t.exit||null, pieces: t.pieces??0
+    }]).select().single();
+    if (error) { console.error('dbAddTool:', error); return null; }
+    return data;
+  } catch(e) { console.error(e); return null; }
+}
+
+async function dbUpdateTool(id, t) {
+  try {
+    const { data, error } = await db.from('tools').update({
+      icon: t.icon||null, color: t.color||null, img: t.img||null,
+      tool_name: t.name, tool_desc: t.desc||null,
+      entry: t.entry||null, exit_date: t.exit||null, pieces: t.pieces??0
+    }).eq('id', id).select().single();
+    if (error) { console.error('dbUpdateTool:', error); return null; }
+    return data;
+  } catch(e) { console.error(e); return null; }
+}
+
+async function dbDeleteTool(id) {
+  try {
+    const { error } = await db.from('tools').delete().eq('id', id);
+    if (error) { console.error('dbDeleteTool:', error); return false; }
+    return true;
+  } catch(e) { console.error(e); return false; }
+}
+
+async function dbLoadWaConfig() {
+  try {
+    const { data, error } = await db.from('wa_config').select('*').eq('id', 1).maybeSingle();
+    if (error || !data) return null;
+    return { country: data.country||'52', phone: data.phone||'', name: data.contact_name||'', auto: data.auto??true, btn: data.btn??true };
+  } catch(e) { console.error(e); return null; }
+}
+
+async function dbSaveWaConfig(c) {
+  try {
+    const { error } = await db.from('wa_config').upsert({
+      id: 1, country: c.country, phone: c.phone, contact_name: c.name,
+      auto: c.auto, btn: c.btn, updated_at: new Date().toISOString()
+    });
+    if (error) { console.error('dbSaveWaConfig:', error); return false; }
+    return true;
+  } catch(e) { console.error(e); return false; }
+}
+
+// ============================================================
+//  APP LOGIC
+// ============================================================
+
+const ICONS = ['🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜','🔑','🪤','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲'];
+const COLORS = ['#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6','#60a5fa','#fbbf24'];
+const STOCK_LIMIT = 20;
+
+let tools = [], wa = { country:'52', phone:'', name:'', auto:true, btn:true };
+let alertedIds = JSON.parse(localStorage.getItem('ct-alerted') || '[]');
+let editingId = null, deleteId = null;
+let selIcon = ICONS[0], selImgB64 = null, pickerMode = 'icon';
+
+// ── Loading ──────────────────────────────────────────────────
+
+function showLoading(msg='Cargando…') {
+  let el = document.getElementById('loading-overlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loading-overlay';
+    el.className = 'loading-overlay';
+    el.innerHTML = `<div class="spinner"></div><div class="loading-text"></div>`;
+    document.body.appendChild(el);
+  }
+  el.querySelector('.loading-text').textContent = msg;
+  el.style.display = 'flex';
+}
+function hideLoading() {
+  const el = document.getElementById('loading-overlay');
+  if (el) el.style.display = 'none';
+}
+
+// ── Toast ────────────────────────────────────────────────────
+
+function showToast(msg, ms=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+// ── Stats ────────────────────────────────────────────────────
+
+function updateStats() {
+  const total = tools.length;
+  const empty = tools.filter(t => t.pieces === 0).length;
+  const low   = tools.filter(t => t.pieces > 0 && t.pieces <= STOCK_LIMIT).length;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-ok').textContent    = total - empty - low;
+  document.getElementById('st-low').textContent   = low;
+  document.getElementById('st-empty').textContent = empty;
+}
+
+// ── WA Chip ──────────────────────────────────────────────────
+
+function updateWaChip() {
+  const chip  = document.getElementById('wa-status-chip');
+  const label = document.getElementById('ws-label');
+  if (wa.phone) {
+    chip.classList.remove('unconfigured');
+    label.textContent = `Alertas → +${wa.country}${wa.phone}`;
+  } else {
+    chip.classList.add('unconfigured');
+    label.textContent = 'WhatsApp no configurado';
+  }
+}
+
+// ── Helpers ──────────────────────────────────────────────────
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${day}/${m}/${y}`;
+}
+function mapRow(r) {
+  return { id:r.id, icon:r.icon, color:r.color, img:r.img,
+           name:r.tool_name, desc:r.tool_desc,
+           entry:r.entry, exit:r.exit_date,
+           pieces:r.pieces, created_at:r.created_at };
+}
+
+// ── Render ───────────────────────────────────────────────────
+
+function renderCards() {
+  const q   = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  const box = document.getElementById('cards-container');
+  const emp = document.getElementById('empty-state');
+  const lbl = document.getElementById('section-label');
+
+  const list = q ? tools.filter(t =>
+    (t.name||'').toLowerCase().includes(q) ||
+    (t.desc||'').toLowerCase().includes(q)) : tools;
+
+  lbl.textContent = q ? `Resultados para "${q}"` : 'Todas las herramientas';
+  box.innerHTML = '';
+
+  if (list.length === 0) { emp.classList.add('show'); return; }
+  emp.classList.remove('show');
+  list.forEach(t => box.appendChild(buildCard(t)));
+}
+
+function buildCard(t) {
+  const isLow   = t.pieces > 0 && t.pieces <= STOCK_LIMIT;
+  const isEmpty = t.pieces === 0;
+  const alerted = alertedIds.includes(t.id);
+
+  let badgeCls = '';
+  if (isEmpty) badgeCls = 'empty';
+  else if (isLow) badgeCls = 'alert';
+
+  const iconHTML = t.img
+    ? `<div class="tool-icon"><img src="${esc(t.img)}" alt="${esc(t.name)}"></div>`
+    : `<div class="tool-icon" style="background:${t.color||'#f0c040'}22;color:${t.color||'#f0c040'}">${t.icon||'🔧'}</div>`;
+
+  const datesHTML = (t.entry || t.exit) ? `
+    <div class="card-dates">
+      ${t.entry ? `<div class="date-chip"><span class="label">Ingreso</span><span class="value">${fmtDate(t.entry)}</span></div>` : ''}
+      ${t.exit  ? `<div class="date-chip"><span class="label">Salida</span><span class="value">${fmtDate(t.exit)}</span></div>`  : ''}
+    </div>` : '';
+
+  let alertRow = '';
+  if ((isLow || isEmpty) && wa.btn) {
+    if (wa.phone) {
+      alertRow = `
+        <div class="stock-alert-row">
+          <span class="sa-text">⚠️ ${isEmpty ? 'Sin stock' : `Solo ${t.pieces} piezas`}</span>
+          <button class="wa-send-btn${alerted?' sent':''}" onclick="sendWaAlert('${t.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.979-1.304A9.963 9.963 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 11.999 2zm.001 18a7.946 7.946 0 01-4.291-1.254l-.308-.183-3.172.831.845-3.083-.2-.317A7.945 7.945 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/></svg>
+            ${alerted ? 'Enviado ✓' : 'Avisar'}
+          </button>
+        </div>`;
+    } else {
+      alertRow = `<div class="wa-not-set" onclick="openWaModal()">
+        <span>⚠️ ${isEmpty ? 'Sin stock' : 'Stock bajo'} — configura WhatsApp</span>
+        <span class="setup-link">Configurar ›</span></div>`;
+    }
+  }
+
+  const card = document.createElement('div');
+  card.className = `tool-card${(isLow||isEmpty)?' alert-stock':''}`;
+  card.dataset.id = t.id;
+  card.innerHTML = `
+    <div class="card-header">
+      ${iconHTML}
+      <div class="card-title-wrap">
+        <div class="tool-name">${esc(t.name)}</div>
+        <div class="tool-desc">${esc(t.desc||'Sin descripción')}</div>
+      </div>
+      <div class="pieces-badge ${badgeCls}">${t.pieces}<br><span style="font-size:9px;font-weight:400">pzs</span></div>
+    </div>
+    ${datesHTML}${alertRow}
+    <div class="card-actions">
+      <button class="action-btn edit" onclick="openEditModal('${t.id}')">✏️ Editar</button>
+      <button class="action-btn delete" onclick="openDeleteModal('${t.id}')">🗑️ Eliminar</button>
+    </div>`;
+  return card;
+}
+
+// ── WA Alert ─────────────────────────────────────────────────
+
+function buildWaMsg(tool) {
+  const resp = wa.name ? `Hola ${wa.name},\n` : '';
+  const st   = tool.pieces === 0 ? '❌ *SIN STOCK*' : `⚠️ Solo quedan *${tool.pieces} piezas*`;
+  return `${resp}🔧 *Alerta de stock — CatálogoTools*\n\n📦 Herramienta: *${tool.name}*\n${st}\n\n👉 Por favor repone el inventario a la brevedad.\n\n_Mensaje automático de CatálogoTools_`;
+}
+
+function sendWaAlert(id) {
+  const tool = tools.find(t => t.id === id);
+  if (!tool || !wa.phone) { openWaModal(); return; }
+  window.open(`https://wa.me/${wa.country}${wa.phone}?text=${encodeURIComponent(buildWaMsg(tool))}`, '_blank');
+  if (!alertedIds.includes(id)) { alertedIds.push(id); localStorage.setItem('ct-alerted', JSON.stringify(alertedIds)); }
+  renderCards();
+}
+
+// ── WA Modal ─────────────────────────────────────────────────
+
+function openWaModal() {
+  document.getElementById('wa-country').value = wa.country;
+  document.getElementById('wa-phone').value   = wa.phone;
+  document.getElementById('wa-name').value    = wa.name;
+  document.getElementById('tog-auto').checked = wa.auto;
+  document.getElementById('tog-btn').checked  = wa.btn;
+  updateMsgPreview();
+  document.getElementById('wa-modal').classList.add('open');
+}
+function closeWaModal()  { document.getElementById('wa-modal').classList.remove('open'); }
+function closeWaOnOverlay(e) { if (e.target.id === 'wa-modal') closeWaModal(); }
+
+function updateMsgPreview() {
+  const phone = document.getElementById('wa-phone').value.trim();
+  const name  = document.getElementById('wa-name').value.trim();
+  const p     = document.getElementById('msg-preview-text');
+  if (!phone) { p.textContent = 'Ingresa un número para ver la vista previa.'; return; }
+  const resp = name ? `Hola ${name},\n` : '';
+  p.textContent = `${resp}🔧 Alerta de stock — CatálogoTools\n\n📦 Herramienta: Taladro Percutor\n⚠️ Solo quedan 5 piezas\n\n👉 Por favor repone el inventario a la brevedad.\n\n_Mensaje automático_`;
+}
+
+async function saveWaConfig() {
+  const cfg = {
+    country: document.getElementById('wa-country').value,
+    phone:   document.getElementById('wa-phone').value.trim().replace(/\D/g,''),
+    name:    document.getElementById('wa-name').value.trim(),
+    auto:    document.getElementById('tog-auto').checked,
+    btn:     document.getElementById('tog-btn').checked
+  };
+  if (!cfg.phone) { showToast('⚠️ Ingresa un número válido'); return; }
+  const ok = await dbSaveWaConfig(cfg);
+  if (ok) { wa = cfg; updateWaChip(); renderCards(); closeWaModal(); showToast('✅ WhatsApp configurado'); }
+  else showToast('❌ Error al guardar');
+}
+
+function sendWaTest() {
+  const phone   = document.getElementById('wa-phone').value.trim().replace(/\D/g,'');
+  const country = document.getElementById('wa-country').value;
+  if (!phone) { showToast('⚠️ Ingresa un número primero'); return; }
+  const msg = encodeURIComponent('🔧 *[PRUEBA] CatálogoTools*\n\nEste es un mensaje de prueba. Si lo recibes, ¡WhatsApp está configurado correctamente! ✅');
+  window.open(`https://wa.me/${country}${phone}?text=${msg}`, '_blank');
+}
+
+// ── Icon Picker ──────────────────────────────────────────────
+
+function buildIconPicker() {
+  const c = document.getElementById('icon-selector');
+  c.innerHTML = '';
+  ICONS.forEach(icon => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'icon-opt' + (icon === selIcon ? ' selected' : '');
+    b.textContent = icon;
+    b.onclick = () => { selIcon = icon; c.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('selected')); b.classList.add('selected'); };
+    c.appendChild(b);
+  });
+}
+
+function switchTab(tab) {
+  pickerMode = tab;
+  document.getElementById('tab-icon').classList.toggle('active', tab==='icon');
+  document.getElementById('tab-img').classList.toggle('active',  tab==='img');
+  document.getElementById('panel-icon').style.display = tab==='icon' ? '' : 'none';
+  document.getElementById('panel-img').style.display  = tab==='img'  ? '' : 'none';
+}
+
+function handleFileSelect(e) { if (e.target.files[0]) readImageFile(e.target.files[0]); }
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) readImageFile(f);
+}
+function readImageFile(f) {
+  const r = new FileReader();
+  r.onload = ev => {
+    selImgB64 = ev.target.result;
+    document.getElementById('img-placeholder').style.display = 'none';
+    document.getElementById('img-preview-wrap').style.display = '';
+    document.getElementById('img-preview').src = selImgB64;
+  };
+  r.readAsDataURL(f);
+}
+function removeImage(e) {
+  e.stopPropagation();
+  selImgB64 = null;
+  document.getElementById('img-placeholder').style.display = '';
+  document.getElementById('img-preview-wrap').style.display = 'none';
+  document.getElementById('img-preview').src = '';
+  document.getElementById('img-file-input').value = '';
+}
+
+// ── Form Modal ───────────────────────────────────────────────
+
+function resetForm() {
+  ['f-name','f-desc','f-entry','f-exit','f-pieces'].forEach(id => document.getElementById(id).value = '');
+  selImgB64 = null; selIcon = ICONS[0];
+  document.getElementById('img-placeholder').style.display = '';
+  document.getElementById('img-preview-wrap').style.display = 'none';
+  document.getElementById('img-preview').src = '';
+  document.getElementById('img-file-input').value = '';
+  switchTab('icon');
+  buildIconPicker();
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').innerHTML = 'Nueva <span>Herramienta</span>';
+  resetForm();
+  document.getElementById('form-modal').classList.add('open');
+}
+
+function openEditModal(id) {
+  const t = tools.find(x => x.id === id);
+  if (!t) return;
+  editingId = id; selIcon = t.icon || ICONS[0]; selImgB64 = t.img || null;
+  document.getElementById('modal-title').innerHTML = 'Editar <span>Herramienta</span>';
+  document.getElementById('f-name').value   = t.name  || '';
+  document.getElementById('f-desc').value   = t.desc  || '';
+  document.getElementById('f-entry').value  = t.entry || '';
+  document.getElementById('f-exit').value   = t.exit  || '';
+  document.getElementById('f-pieces').value = t.pieces ?? '';
+  if (t.img) {
+    document.getElementById('img-placeholder').style.display = 'none';
+    document.getElementById('img-preview-wrap').style.display = '';
+    document.getElementById('img-preview').src = t.img;
+    switchTab('img');
+  } else {
+    document.getElementById('img-placeholder').style.display = '';
+    document.getElementById('img-preview-wrap').style.display = 'none';
+    switchTab('icon');
+  }
+  buildIconPicker();
+  document.getElementById('form-modal').classList.add('open');
+}
+
+function closeFormModal() { document.getElementById('form-modal').classList.remove('open'); }
+function closeFormOnOverlay(e) { if (e.target.id === 'form-modal') closeFormModal(); }
+
+async function saveTool() {
+  const name   = document.getElementById('f-name').value.trim();
+  const pieces = parseInt(document.getElementById('f-pieces').value, 10);
+  if (!name)               { showToast('⚠️ El nombre es obligatorio'); return; }
+  if (isNaN(pieces)||pieces<0) { showToast('⚠️ Cantidad inválida'); return; }
+
+  const orig  = editingId ? tools.find(t => t.id === editingId) : null;
+  const color = orig?.color || COLORS[Math.floor(Math.random() * COLORS.length)];
+  const data  = {
+    icon:   pickerMode==='icon' ? selIcon   : null,
+    color:  pickerMode==='icon' ? color     : null,
+    img:    pickerMode==='img'  ? selImgB64 : null,
+    name,
+    desc:   document.getElementById('f-desc').value.trim(),
+    entry:  document.getElementById('f-entry').value || null,
+    exit:   document.getElementById('f-exit').value  || null,
+    pieces
+  };
+
+  showLoading(editingId ? 'Actualizando…' : 'Guardando…');
+  let row = null;
+
+  if (editingId) {
+    row = await dbUpdateTool(editingId, data);
+    if (row) { const i = tools.findIndex(t => t.id === editingId); if (i!==-1) tools[i] = mapRow(row); showToast('✅ Herramienta actualizada'); }
+    else showToast('❌ Error al actualizar');
+  } else {
+    row = await dbAddTool(data);
+    if (row) {
+      tools.unshift(mapRow(row));
+      showToast('✅ Herramienta agregada');
+      if (wa.auto && wa.phone && pieces <= STOCK_LIMIT) setTimeout(() => sendWaAlert(row.id), 500);
+    } else showToast('❌ Error al guardar');
+  }
+
+  hideLoading();
+  if (row) { updateStats(); renderCards(); closeFormModal(); }
+}
+
+// ── Delete Modal ─────────────────────────────────────────────
+
+function openDeleteModal(id) { deleteId = id; document.getElementById('confirm-modal').classList.add('open'); }
+function closeConfirmModal() { deleteId = null; document.getElementById('confirm-modal').classList.remove('open'); }
+
+async function confirmDelete() {
+  if (!deleteId) return;
+  showLoading('Eliminando…');
+  const ok = await dbDeleteTool(deleteId);
+  hideLoading();
+  if (ok) {
+    tools = tools.filter(t => t.id !== deleteId);
+    alertedIds = alertedIds.filter(id => id !== deleteId);
+    localStorage.setItem('ct-alerted', JSON.stringify(alertedIds));
+    updateStats(); renderCards(); showToast('🗑️ Herramienta eliminada');
+  } else showToast('❌ Error al eliminar');
+  closeConfirmModal();
+}
+
+// ── Init ─────────────────────────────────────────────────────
+
+async function init() {
+  showLoading('Iniciando CatálogoTools…');
+  try {
+    const [waConfig, toolList] = await Promise.all([dbLoadWaConfig(), dbLoadTools()]);
+    if (waConfig) wa = { ...wa, ...waConfig };
+    tools = toolList;
+    updateWaChip();
+    updateStats();
+    renderCards();
+  } catch(e) {
+    console.error('Error al iniciar:', e);
+    showToast('❌ Error de conexión con Supabase');
+  } finally {
+    hideLoading();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
