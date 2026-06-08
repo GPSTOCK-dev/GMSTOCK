@@ -445,11 +445,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
     </div>
     <div class="form-group">
       <label class="form-label">Nombre de la herramienta</label>
-      <input class="form-input" id="f-name" type="text" placeholder="Ej: Taladro Percutor">
+      <input class="form-input" id="f-name" type="text" placeholder="">
     </div>
     <div class="form-group">
       <label class="form-label">Descripción</label>
-      <textarea class="form-input" id="f-desc" rows="3" placeholder="Descripción breve…"></textarea>
+      <textarea class="form-input" id="f-desc" rows="3" placeholder="Breve…"></textarea>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -470,7 +470,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
       <div style="display:flex;align-items:center;gap:10px">
         <input class="form-input" id="f-stock-limit" type="number" min="1" placeholder="20" value="20" style="flex:1">
         <div style="font-size:11.5px;color:var(--text-muted);line-height:1.4;flex:2">
-          Aviso WhatsApp cuando las piezas sean <strong style="color:var(--warning)">≤ este número</strong>
+          Se notificara via WhatsApp cuando las piezas sean <strong style="color:var(--warning)">≤ a este No.</strong>
         </div>
       </div>
     </div>
@@ -773,7 +773,7 @@ function updateMsgPreview() {
   const p     = document.getElementById('msg-preview-text');
   if (!phone) { p.textContent = 'Ingresa un número para ver la vista previa.'; return; }
   const resp = name ? `Hola ${name},\n` : '';
-  p.textContent = `${resp}🔧 Alerta de stock — CatálogoTools\n\n📦 Herramienta: Taladro Percutor\n⚠️ Solo quedan 5 piezas\n\n👉 Por favor repone el inventario a la brevedad.\n\n_Mensaje automático_`;
+  p.textContent = `${resp}🔧 Alerta de stock\n\n📦 Herramienta: Atenuador\n⚠️ Solo quedan 5 piezas\n\n👉 Por favor Ing reponer el inventario a la brevedad!\n\n`;
 }
 
 async function saveWaConfig() {
@@ -893,7 +893,7 @@ function resetForm() {
 
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').innerHTML = 'agrega <span>Herramienta</span>';
+  document.getElementById('modal-title').innerHTML = 'Agregar <span>Herramienta</span>';
   resetForm();
   document.getElementById('form-modal').classList.add('open');
 }
