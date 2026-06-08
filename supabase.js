@@ -4,7 +4,7 @@
 // ============================================================
 
 const SUPABASE_URL      = 'https://qsdxxofjgodegypayaoz.supabase.co/rest/v1/';
-const SUPABASE_ANON_KEY = 'sb_publishable_uF_-5NsqRJJFEv3MElzkpg_qFHhmXhT'; // 👈 Pega aquí tu clave completa desde Supabase → Settings → API
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZHh4b2ZqZ29kZWd5cGF5YW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NzMzMjAsImV4cCI6MjA5NjQ0OTMyMH0.1a9ZQFo9Vvw-ODGjUKpfMkh_Mgdp4byRajpdMZziDF4'; // 👈 Pega aquí tu clave completa desde Supabase → Settings → API
 
 // Inicialización usando la CDN de Supabase cargada en index.html
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
