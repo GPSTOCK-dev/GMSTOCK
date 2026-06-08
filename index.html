@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CatálogoTools</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🔧</div>
+      <div class="logo-text">Catálogo<span>Tools</span></div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn btn-wa" onclick="openWaModal()" title="Configurar WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
+          <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.979-1.304A9.963 9.963 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 11.999 2zm.001 18a7.946 7.946 0 01-4.291-1.254l-.308-.183-3.172.831.845-3.083-.2-.317A7.945 7.945 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/>
+        </svg>
+      </button>
+      <button class="icon-btn btn-add" onclick="openAddModal()">+</button>
+    </div>
+  </div>
+
+  <!-- WA Status chip -->
+  <div class="wa-status-chip" id="wa-status-chip" onclick="openWaModal()">
+    <div class="ws-dot"></div>
+    <span class="ws-label" id="ws-label">Cargando…</span>
+    <span class="ws-edit">Editar ›</span>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-pill"><div class="dot" style="background:var(--accent)"></div>Total: <span class="num" id="st-total">0</span></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--available)"></div>OK: <span class="num" id="st-ok">0</span></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--warning)"></div>Stock bajo: <span class="num" id="st-low">0</span></div>
+    <div class="stat-pill"><div class="dot" style="background:var(--danger)"></div>Sin stock: <span class="num" id="st-empty">0</span></div>
+  </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="search-input" placeholder="Buscar herramienta…" oninput="renderCards()">
+  </div>
+</div>
+
+<!-- CONTENT -->
+<main class="content">
+  <div class="section-title" id="section-label">Todas las herramientas</div>
+  <div id="cards-container"></div>
+  <div class="empty-state" id="empty-state">
+    <div class="empty-icon">🔍</div>
+    <h3>No se encontraron herramientas</h3>
+    <p>Intenta otro término o agrega una nueva.</p>
+  </div>
+</main>
+
+<!-- MODAL: WHATSAPP CONFIG -->
+<div class="modal-overlay" id="wa-modal" onclick="closeWaOnOverlay(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Alertas por <span style="color:var(--whatsapp)">WhatsApp</span></div>
+    <div class="modal-subtitle">
+      Configura el número que recibirá automáticamente un mensaje cuando cualquier herramienta llegue a <strong style="color:var(--warning)">20 piezas o menos</strong>.
+    </div>
+
+    <div class="wa-config-card">
+      <div class="wcc-top">
+        <span class="wcc-icon">📲</span>
+        <div>
+          <div class="wcc-title">Número de alerta</div>
+          <div class="wcc-sub">Recibirá el aviso de stock bajo de forma automática</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:10px">
+        <label class="form-label">Código de país + número</label>
+        <div class="phone-group">
+          <div class="phone-flag">
+            <span>🌎</span>
+            <select id="wa-country" onchange="updateMsgPreview()">
+              <option value="52">MX +52</option>
+              <option value="1">US +1</option>
+              <option value="54">AR +54</option>
+              <option value="57">CO +57</option>
+              <option value="51">PE +51</option>
+              <option value="56">CL +56</option>
+              <option value="34">ES +34</option>
+              <option value="58">VE +58</option>
+              <option value="593">EC +593</option>
+              <option value="502">GT +502</option>
+              <option value="503">SV +503</option>
+              <option value="504">HN +504</option>
+              <option value="505">NI +505</option>
+              <option value="506">CR +506</option>
+              <option value="507">PA +507</option>
+              <option value="591">BO +591</option>
+              <option value="595">PY +595</option>
+              <option value="598">UY +598</option>
+            </select>
+          </div>
+          <input class="form-input" id="wa-phone" type="tel"
+            placeholder="Ej: 5512345678" oninput="updateMsgPreview()"
+            style="flex:1;margin:0">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Nombre del responsable</label>
+        <input class="form-input" id="wa-name" type="text"
+          placeholder="Ej: Encargado de Almacén" oninput="updateMsgPreview()">
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="ti-label">Alerta automática al guardar</div>
+          <div class="ti-sub">Envía aviso si las piezas quedan ≤ 20 al guardar una herramienta</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="tog-auto" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="ti-label">Botón "Avisar" en tarjetas</div>
+          <div class="ti-sub">Muestra acceso rápido en cada herramienta con stock bajo</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="tog-btn" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="msg-preview">
+      <div class="mp-label">📩 Vista previa del mensaje</div>
+      <div class="mp-bubble" id="msg-preview-text">—</div>
+    </div>
+
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="closeWaModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveWaConfig()">Guardar</button>
+    </div>
+
+    <button class="btn-wa-full" style="margin-top:10px" onclick="sendWaTest()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
+        <path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.979-1.304A9.963 9.963 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 11.999 2zm.001 18a7.946 7.946 0 01-4.291-1.254l-.308-.183-3.172.831.845-3.083-.2-.317A7.945 7.945 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8z"/>
+      </svg>
+      Enviar mensaje de prueba
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: ADD / EDIT TOOL -->
+<div class="modal-overlay" id="form-modal" onclick="closeFormOnOverlay(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Nueva <span>Herramienta</span></div>
+
+    <div class="form-group">
+      <label class="form-label">Imagen / Ícono</label>
+      <div class="picker-tabs">
+        <button class="picker-tab active" id="tab-icon" onclick="switchTab('icon')">🔧 Ícono emoji</button>
+        <button class="picker-tab" id="tab-img"  onclick="switchTab('img')">🖼️ Subir imagen</button>
+      </div>
+      <div id="panel-icon"><div class="icon-selector" id="icon-selector"></div></div>
+      <div id="panel-img" style="display:none">
+        <div class="img-upload-area" id="upload-area"
+             onclick="document.getElementById('img-file-input').click()"
+             ondragover="event.preventDefault();this.classList.add('dragover')"
+             ondragleave="this.classList.remove('dragover')"
+             ondrop="handleDrop(event)">
+          <input type="file" id="img-file-input" accept="image/*" onchange="handleFileSelect(event)">
+          <div id="img-placeholder" class="upload-placeholder">
+            <div class="up-icon">📁</div>
+            <p>Toca para seleccionar imagen</p>
+            <p style="font-size:11px;margin-top:3px;opacity:.6">JPG, PNG, WEBP · se recorta a 44×44 px</p>
+          </div>
+          <div id="img-preview-wrap" class="img-preview-wrap" style="display:none">
+            <img id="img-preview" class="img-preview" src="" alt="preview">
+            <button class="img-remove" onclick="removeImage(event)">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nombre de la herramienta</label>
+      <input class="form-input" id="f-name" type="text" placeholder="Ej: Taladro Percutor">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción</label>
+      <textarea class="form-input" id="f-desc" rows="3" placeholder="Descripción breve…"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fecha de ingreso</label>
+        <input class="form-input" id="f-entry" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha de salida</label>
+        <input class="form-input" id="f-exit" type="date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Piezas disponibles</label>
+      <input class="form-input" id="f-pieces" type="number" min="0" placeholder="0">
+    </div>
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="closeFormModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveTool()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="confirm-modal" id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <h3>¿Eliminar herramienta?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+    <div class="confirm-btns">
+      <button class="btn-no"  onclick="closeConfirmModal()">No, cancelar</button>
+      <button class="btn-yes" onclick="confirmDelete()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- App scripts -->
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
