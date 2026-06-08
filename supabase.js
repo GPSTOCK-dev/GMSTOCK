@@ -1,12 +1,14 @@
 // ============================================================
-//  supabase.js  —  Configuración y operaciones de base de datos
+//  supabase.js — Corregido para Navegador / GitHub Pages
 // ============================================================
 
-const SUPABASE_URL      = 'https://TU_PROYECTO.supabase.co';  // ← Cambia por tu URL real
-const SUPABASE_ANON_KEY = 'TU_ANON_KEY_AQUI';                 // ← Cambia por tu clave ANON real
+const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Tu clave anon completa
 
-// Inicialización correcta para el navegador usando la CDN del index.html
+// Forma correcta de inicializar Supabase desde la CDN en la Web
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ... (El resto de tus funciones dbLoadTools, dbAddTool, etc. se quedan igual)
 
 // ── TOOLS ─────────────────────────────────────────────────────
 
