@@ -3,12 +3,10 @@
 // ============================================================
 
 const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // Tu clave anon completa
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmaWR2d3R2Ynh2b2J2aHluZGJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NzY0ODIsImV4cCI6MjA2NDA1MjQ4Mn0.NIn6w9N_Z1mD2bIidOiaD4wR8V9q7bSIs_0x0U56UvQ'; 
 
-// Forma correcta de inicializar Supabase desde la CDN en la Web
+// Inicialización desde la CDN global
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ... (El resto de tus funciones dbLoadTools, dbAddTool, etc. se quedan igual)
 
 // ── TOOLS ─────────────────────────────────────────────────────
 
@@ -29,16 +27,16 @@ async function dbLoadTools() {
     icon:       row.icon,
     color:      row.color,
     img:        row.img,
-    name:       row.tool_name,  // Mapeo correcto a tu tabla SQL
-    desc:       row.tool_desc,  // Mapeo correcto a tu tabla SQL
+    name:       row.tool_name,  
+    desc:       row.tool_desc,  
     entry:      row.entry,
-    exit:       row.exit_date,  // Mapeo correcto a tu tabla SQL
+    exit:       row.exit_date,  
     pieces:     row.pieces,
     created_at: row.created_at
   }));
 }
 
-/** Inserta una nueva herramienta */
+/** Inserta una nueva herramienta y retorna el objeto mapeado */
 async function dbAddTool(tool) {
   const { data, error } = await db
     .from('tools')
@@ -46,20 +44,34 @@ async function dbAddTool(tool) {
       icon:      tool.icon,
       color:     tool.color,
       img:       tool.img,
-      tool_name: tool.name,      // Columna SQL real
-      tool_desc: tool.desc,      // Columna SQL real
+      tool_name: tool.name,      
+      tool_desc: tool.desc,      
       entry:     tool.entry || null,
-      exit_date: tool.exit || null, // Columna SQL real
+      exit_date: tool.exit || null, 
       pieces:    tool.pieces
     }])
     .select()
     .single();
     
-  if (error) { console.error('dbAddTool:', error); return null; }
-  return data;
+  if (error) { 
+    console.error('dbAddTool:', error); 
+    return null; 
+  }
+  
+  return {
+    id:     data.id,
+    icon:   data.icon,
+    color:  data.color,
+    img:    data.img,
+    name:   data.tool_name,
+    desc:   data.tool_desc,
+    entry:  data.entry,
+    exit:   data.exit_date,
+    pieces: data.pieces
+  };
 }
 
-/** Actualiza una herramienta existente */
+/** Actualiza una herramienta existente y retorna el objeto mapeado */
 async function dbUpdateTool(id, tool) {
   const { data, error } = await db
     .from('tools')
@@ -77,8 +89,22 @@ async function dbUpdateTool(id, tool) {
     .select()
     .single();
     
-  if (error) { console.error('dbUpdateTool:', error); return null; }
-  return data;
+  if (error) { 
+    console.error('dbUpdateTool:', error); 
+    return null; 
+  }
+  
+  return {
+    id:     data.id,
+    icon:   data.icon,
+    color:  data.color,
+    img:    data.img,
+    name:   data.tool_name,
+    desc:   data.tool_desc,
+    entry:  data.entry,
+    exit:   data.exit_date,
+    pieces: data.pieces
+  };
 }
 
 /** Elimina una herramienta por id */
@@ -99,8 +125,8 @@ async function dbLoadWaConfig() {
     .from('wa_config')
     .select('*')
     .eq('id', 1)
-    .maybeSingle(); // 👈 CAMBIADO AQUÍ (Evita que la app se congele si la tabla está vacía)
-
+    .maybeSingle(); 
+    
   if (error || !data) return null;
   return {
     country: data.country,
