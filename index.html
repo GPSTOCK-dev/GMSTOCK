@@ -223,25 +223,32 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
   justify-content:center;gap:8px;transition:opacity .15s}
 .btn-wa-full:active{opacity:.85}
 
-/* ICON PICKER */
-.icon-picker-wrap{display:flex;flex-direction:column;gap:12px}
-.icon-preview-row{display:flex;align-items:center;gap:12px;
-  background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px}
-.icon-preview-box{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
-  justify-content:center;font-size:24px;flex-shrink:0;transition:background .2s}
-.icon-preview-label{font-size:12px;color:var(--text-muted);line-height:1.5}
-.icon-preview-label strong{display:block;font-size:13.5px;color:var(--text);font-weight:600;margin-bottom:2px}
-.picker-section-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
+/* OPTIONAL ICON/COLOR SECTION */
+.opt-toggle-btn{width:100%;display:flex;align-items:center;justify-content:space-between;
+  background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:11px 14px;cursor:pointer;transition:border-color .2s}
+.opt-toggle-btn:hover{border-color:var(--accent)}
+.opt-toggle-left{display:flex;align-items:center;gap:10px}
+.opt-toggle-preview{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:17px;flex-shrink:0;transition:background .2s}
+.opt-toggle-text{font-size:13px;color:var(--text-muted)}
+.opt-toggle-text strong{display:block;font-size:13.5px;color:var(--text);font-weight:600}
+.opt-toggle-arrow{font-size:12px;color:var(--text-muted);transition:transform .2s}
+.opt-toggle-arrow.open{transform:rotate(180deg)}
+.opt-panel{display:none;margin-top:10px;padding:14px;background:var(--card);
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);gap:14px;flex-direction:column}
+.opt-panel.open{display:flex}
+.opt-section-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;
   color:var(--text-muted);font-weight:600;margin-bottom:7px}
-.icon-selector{display:flex;gap:7px;flex-wrap:wrap}
-.icon-opt{width:42px;height:42px;border-radius:10px;border:2px solid var(--border);
-  background:var(--card);font-size:20px;cursor:pointer;
+.icon-selector{display:flex;gap:6px;flex-wrap:wrap}
+.icon-opt{width:40px;height:40px;border-radius:9px;border:2px solid var(--border);
+  background:var(--bg);font-size:18px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
 .icon-opt.selected{border-color:var(--accent);background:rgba(240,192,64,.12)}
 .color-selector{display:flex;gap:8px;flex-wrap:wrap}
-.color-opt{width:30px;height:30px;border-radius:50%;border:2.5px solid transparent;
-  cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0}
-.color-opt.selected{border-color:var(--text);transform:scale(1.18)}
+.color-opt{width:28px;height:28px;border-radius:50%;border:2.5px solid transparent;
+  cursor:pointer;transition:transform .15s,border-color .15s}
+.color-opt.selected{border-color:var(--text);transform:scale(1.2)}
 
 /* DELETE CONFIRM */
 .confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.8);
@@ -417,26 +424,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-title">Nueva <span>Herramienta</span></div>
     <div class="form-group">
-      <label class="form-label">Ícono y color</label>
-      <div class="icon-picker-wrap">
-        <div class="icon-preview-row">
-          <div class="icon-preview-box" id="icon-preview-box">🔧</div>
-          <div class="icon-preview-label">
-            <strong>Vista previa</strong>
-            Selecciona un ícono y color de fondo
-          </div>
-        </div>
-        <div>
-          <div class="picker-section-label">Ícono</div>
-          <div class="icon-selector" id="icon-selector"></div>
-        </div>
-        <div>
-          <div class="picker-section-label">Color de fondo</div>
-          <div class="color-selector" id="color-selector"></div>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
       <label class="form-label">Nombre de la herramienta</label>
       <input class="form-input" id="f-name" type="text" placeholder="Ej: Taladro Percutor">
     </div>
@@ -458,6 +445,32 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
       <label class="form-label">Piezas disponibles</label>
       <input class="form-input" id="f-pieces" type="number" min="0" placeholder="0">
     </div>
+
+    <!-- OPCIONAL: ícono y color -->
+    <div class="form-group">
+      <label class="form-label">Ícono y color <span style="font-size:10px;opacity:.6;text-transform:none;letter-spacing:0">(opcional)</span></label>
+      <button type="button" class="opt-toggle-btn" onclick="toggleOptPanel()">
+        <div class="opt-toggle-left">
+          <div class="opt-toggle-preview" id="opt-preview">🔧</div>
+          <div class="opt-toggle-text">
+            <strong id="opt-preview-label">Sin personalizar</strong>
+            Toca para elegir ícono y color
+          </div>
+        </div>
+        <span class="opt-toggle-arrow" id="opt-arrow">▼</span>
+      </button>
+      <div class="opt-panel" id="opt-panel">
+        <div>
+          <div class="opt-section-label">Ícono</div>
+          <div class="icon-selector" id="icon-selector"></div>
+        </div>
+        <div>
+          <div class="opt-section-label">Color de fondo</div>
+          <div class="color-selector" id="color-selector"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="form-btns">
       <button type="button" class="btn-cancel" onclick="closeFormModal()">Cancelar</button>
       <button type="button" class="btn-primary" onclick="saveTool()">Guardar</button>
@@ -560,24 +573,14 @@ async function dbSaveWaConfig(c) {
 //  APP LOGIC
 // ============================================================
 
-const ICONS = [
-  '🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜',
-  '🔑','🪤','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲',
-  '🪝','🔗','⛏️','🪣','🧪','🔮','📦','🗂️','🖥️','📡',
-  '🚿','🪠','🔦','🕯️','🧯','🪑','🛏️','🚪','🪟','🧹',
-  '🧺','🧻','🚰','🪤','🔐','🗝️','🪤','⚗️','🧫','🧬'
-];
-const COLORS = [
-  '#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6',
-  '#60a5fa','#fbbf24','#fb923c','#a3e635','#22d3ee','#e879f9',
-  '#f87171','#818cf8','#2dd4bf','#facc15'
-];
+const ICONS = ['🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜','🔑','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲','🪝','⛏️','🪣','📦','🗂️','🔦','🧯','🚪','🪟','🧹','🔐'];
+const COLORS = ['#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6','#60a5fa','#fbbf24','#fb923c','#a3e635','#22d3ee','#e879f9','#f87171','#818cf8','#2dd4bf','#facc15'];
 const STOCK_LIMIT = 20;
 
 let tools = [], wa = { country:'52', phone:'', name:'', auto:true, btn:true };
 let alertedIds = JSON.parse(localStorage.getItem('ct-alerted') || '[]');
 let editingId = null, deleteId = null;
-let selIcon = ICONS[0], selColor = COLORS[0];
+let selIcon = null, selColor = null; // null = sin personalizar
 
 // ── Loading ──────────────────────────────────────────────────
 
@@ -680,9 +683,17 @@ function buildCard(t) {
   if (isEmpty) badgeCls = 'empty';
   else if (isLow) badgeCls = 'alert';
 
-  const iconHTML = t.img
-    ? `<div class="tool-icon"><img src="${esc(t.img)}" alt="${esc(t.name)}"></div>`
-    : `<div class="tool-icon" style="background:${t.color||'#f0c040'}22;color:${t.color||'#f0c040'}">${t.icon||'🔧'}</div>`;
+  // Si tiene ícono/color personalizado úsalo; si no, muestra inicial del nombre
+  let iconHTML;
+  if (t.icon && t.color) {
+    iconHTML = `<div class="tool-icon" style="background:${t.color}33;color:${t.color}">${t.icon}</div>`;
+  } else if (t.icon) {
+    iconHTML = `<div class="tool-icon" style="background:rgba(240,192,64,.15);color:#f0c040">${t.icon}</div>`;
+  } else {
+    const initial = (t.name||'?').charAt(0).toUpperCase();
+    const color   = t.color || '#f0c040';
+    iconHTML = `<div class="tool-icon" style="background:${color}33;color:${color};font-family:'Syne',sans-serif;font-weight:800;font-size:18px">${initial}</div>`;
+  }
 
   const datesHTML = (t.entry || t.exit) ? `
     <div class="card-dates">
@@ -789,21 +800,63 @@ function sendWaTest() {
   window.open(`https://wa.me/${country}${phone}?text=${msg}`, '_blank');
 }
 
-// ── Icon + Color Picker ──────────────────────────────────────
+// ── Optional Icon/Color Picker ───────────────────────────────
 
-function updateIconPreview() {
-  const box = document.getElementById('icon-preview-box');
-  if (box) {
+function updateOptPreview() {
+  const box   = document.getElementById('opt-preview');
+  const label = document.getElementById('opt-preview-label');
+  if (!box) return;
+  if (selIcon && selColor) {
     box.textContent = selIcon;
     box.style.background = selColor + '33';
     box.style.color = selColor;
+    label.textContent = 'Personalizado';
+  } else if (selIcon) {
+    box.textContent = selIcon;
+    box.style.background = 'rgba(240,192,64,.15)';
+    box.style.color = '#f0c040';
+    label.textContent = 'Solo ícono';
+  } else if (selColor) {
+    const initial = (document.getElementById('f-name')?.value||'?').charAt(0).toUpperCase();
+    box.textContent = initial;
+    box.style.background = selColor + '33';
+    box.style.color = selColor;
+    label.textContent = 'Solo color';
+  } else {
+    box.textContent = '🔧';
+    box.style.background = 'rgba(240,192,64,.1)';
+    box.style.color = '#f0c040';
+    label.textContent = 'Sin personalizar';
   }
+}
+
+function toggleOptPanel() {
+  const panel = document.getElementById('opt-panel');
+  const arrow = document.getElementById('opt-arrow');
+  const open  = panel.classList.toggle('open');
+  arrow.classList.toggle('open', open);
+  if (open) { buildIconPicker(); buildColorPicker(); }
 }
 
 function buildIconPicker() {
   const c = document.getElementById('icon-selector');
   if (!c) return;
   c.innerHTML = '';
+  // botón para quitar ícono
+  const none = document.createElement('button');
+  none.type = 'button';
+  none.className = 'icon-opt' + (!selIcon ? ' selected' : '');
+  none.textContent = '✕';
+  none.title = 'Sin ícono';
+  none.style.fontSize = '14px';
+  none.style.color = 'var(--text-muted)';
+  none.onclick = () => {
+    selIcon = null;
+    c.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('selected'));
+    none.classList.add('selected');
+    updateOptPreview();
+  };
+  c.appendChild(none);
   ICONS.forEach(icon => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -813,7 +866,7 @@ function buildIconPicker() {
       selIcon = icon;
       c.querySelectorAll('.icon-opt').forEach(x => x.classList.remove('selected'));
       b.classList.add('selected');
-      updateIconPreview();
+      updateOptPreview();
     };
     c.appendChild(b);
   });
@@ -823,6 +876,25 @@ function buildColorPicker() {
   const c = document.getElementById('color-selector');
   if (!c) return;
   c.innerHTML = '';
+  // botón para quitar color
+  const none = document.createElement('button');
+  none.type = 'button';
+  none.title = 'Sin color';
+  none.className = 'color-opt' + (!selColor ? ' selected' : '');
+  none.style.background = 'var(--border)';
+  none.style.fontSize = '11px';
+  none.style.display = 'flex';
+  none.style.alignItems = 'center';
+  none.style.justifyContent = 'center';
+  none.style.color = 'var(--text-muted)';
+  none.textContent = '✕';
+  none.onclick = () => {
+    selColor = null;
+    c.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
+    none.classList.add('selected');
+    updateOptPreview();
+  };
+  c.appendChild(none);
   COLORS.forEach(color => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -833,7 +905,7 @@ function buildColorPicker() {
       selColor = color;
       c.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
       b.classList.add('selected');
-      updateIconPreview();
+      updateOptPreview();
     };
     c.appendChild(b);
   });
@@ -843,11 +915,12 @@ function buildColorPicker() {
 
 function resetForm() {
   ['f-name','f-desc','f-entry','f-exit','f-pieces'].forEach(id => document.getElementById(id).value = '');
-  selIcon = ICONS[0];
-  selColor = COLORS[0];
-  buildIconPicker();
-  buildColorPicker();
-  updateIconPreview();
+  selIcon = null; selColor = null;
+  const panel = document.getElementById('opt-panel');
+  const arrow = document.getElementById('opt-arrow');
+  panel.classList.remove('open');
+  arrow.classList.remove('open');
+  updateOptPreview();
 }
 
 function openAddModal() {
@@ -861,17 +934,24 @@ function openEditModal(id) {
   const t = tools.find(x => x.id === id);
   if (!t) return;
   editingId = id;
-  selIcon  = t.icon  || ICONS[0];
-  selColor = t.color || COLORS[0];
+  selIcon  = t.icon  || null;
+  selColor = t.color || null;
   document.getElementById('modal-title').innerHTML = 'Editar <span>Herramienta</span>';
   document.getElementById('f-name').value   = t.name  || '';
   document.getElementById('f-desc').value   = t.desc  || '';
   document.getElementById('f-entry').value  = t.entry || '';
   document.getElementById('f-exit').value   = t.exit  || '';
   document.getElementById('f-pieces').value = t.pieces ?? '';
-  buildIconPicker();
-  buildColorPicker();
-  updateIconPreview();
+  const panel = document.getElementById('opt-panel');
+  const arrow = document.getElementById('opt-arrow');
+  // abrir panel solo si ya tiene algo personalizado
+  if (selIcon || selColor) {
+    panel.classList.add('open'); arrow.classList.add('open');
+    buildIconPicker(); buildColorPicker();
+  } else {
+    panel.classList.remove('open'); arrow.classList.remove('open');
+  }
+  updateOptPreview();
   document.getElementById('form-modal').classList.add('open');
 }
 
@@ -885,8 +965,8 @@ async function saveTool() {
   if (isNaN(pieces)||pieces<0) { showToast('⚠️ Cantidad inválida'); return; }
 
   const data = {
-    icon:  selIcon,
-    color: selColor,
+    icon:  selIcon  || null,
+    color: selColor || null,
     img:   null,
     name,
     desc:  document.getElementById('f-desc').value.trim(),
