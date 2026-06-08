@@ -823,14 +823,30 @@ function handleDrop(e) {
 function readImageFile(f) {
   const r = new FileReader();
   r.onload = ev => {
-    selImgB64 = ev.target.result;
-    document.getElementById('img-placeholder').style.display = 'none';
-    document.getElementById('img-preview-wrap').style.display = '';
-    document.getElementById('img-preview').src = selImgB64;
+    const img = new Image();
+    img.onload = () => {
+      // Redimensionar a máximo 400x400px
+      const MAX = 400;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+      else       { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+      // Comprimir a JPEG calidad 70% (~10-30KB)
+      selImgB64 = canvas.toDataURL('image/jpeg', 0.70);
+
+      document.getElementById('img-placeholder').style.display = 'none';
+      document.getElementById('img-preview-wrap').style.display = '';
+      document.getElementById('img-preview').src = selImgB64;
+    };
+    img.src = ev.target.result;
   };
   r.readAsDataURL(f);
 }
-function removeImage(e) {
+  function removeImage(e) {
   e.stopPropagation();
   selImgB64 = null;
   document.getElementById('img-placeholder').style.display = '';
