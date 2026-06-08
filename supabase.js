@@ -99,8 +99,8 @@ async function dbLoadWaConfig() {
     .from('wa_config')
     .select('*')
     .eq('id', 1)
-    .maybeSingle(); // Usamos maybeSingle para evitar excepciones si está vacío
-    
+    .maybeSingle(); // 👈 CAMBIADO AQUÍ (Evita que la app se congele si la tabla está vacía)
+
   if (error || !data) return null;
   return {
     country: data.country,
