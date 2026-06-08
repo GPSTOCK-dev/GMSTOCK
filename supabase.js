@@ -2,8 +2,8 @@
 //  supabase.js — Corregido para Navegador / GitHub Pages
 // ============================================================
 
-const SUPABASE_URL      = 'https://lfidvwtvbxvobvhyndbh.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmaWR2d3R2Ynh2b2J2aHluZGJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg0NzY0ODIsImV4cCI6MjA2NDA1MjQ4Mn0.NIn6w9N_Z1mD2bIidOiaD4wR8V9q7bSIs_0x0U56UvQ'; 
+const SUPABASE_URL      = 'https://qsdxxofjgodegypayaoz.supabase.co/rest/v1/'; 
+const SUPABASE_ANON_KEY = 'sb_publishable_uF_-5NsqRJJFEv3MElzkpg_qFHhmXhT'; 
 
 // Inicialización desde la CDN global
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
