@@ -728,7 +728,7 @@ function buildCard(t) {
 function buildWaMsg(tool) {
   const resp = wa.name ? `Hola ${wa.name},\n` : '';
   const st   = tool.pieces === 0 ? '❌ *SIN STOCK*' : `⚠️ Solo quedan *${tool.pieces} piezas*`;
-  return `${resp}🔧 *Alerta de herramienta — CatálogoTools*\n\n📦 Herramienta: *${tool.name}*\n${st}\n\n👉 Por favor Ing repone el inventario a la breveda!\n\n_Mensaje automático_`;
+  return `${resp}🔧 *ALERTA DE STOCK-INVENTARIO  *\n\n📦 Herramienta: *${tool.name}*\n${st}\n\n👉 Por favor Ing reaiza CESTA!\n\n`;
 }
 
 function sendWaAlert(id) {
@@ -864,7 +864,7 @@ function resetForm() {
 
 function openAddModal() {
   editingId = null;
-  document.getElementById('modal-title').innerHTML = 'agrega <span>Herramienta</span>';
+  document.getElementById('modal-title').innerHTML = 'AGREGAR <span>HERRAMIENTA</span>';
   resetForm();
   document.getElementById('form-modal').classList.add('open');
 }
@@ -900,7 +900,7 @@ async function saveTool() {
   const name   = document.getElementById('f-name').value.trim();
   const pieces = parseInt(document.getElementById('f-pieces').value, 10);
   if (!name)               { showToast('⚠️ El nombre es obligatorio'); return; }
-  if (isNaN(pieces)||pieces<0) { showToast('⚠️ Cantidad inválida'); return; }
+  if (isNaN(pieces)||pieces<0) { showToast('⚠️ AGREGA CANTIDAD'); return; }
 
   const orig  = editingId ? tools.find(t => t.id === editingId) : null;
   const color = orig?.color || COLORS[Math.floor(Math.random() * COLORS.length)];
@@ -920,13 +920,13 @@ async function saveTool() {
 
   if (editingId) {
     row = await dbUpdateTool(editingId, data);
-    if (row) { const i = tools.findIndex(t => t.id === editingId); if (i!==-1) tools[i] = mapRow(row); showToast('✅ Herramienta actualizada'); }
+    if (row) { const i = tools.findIndex(t => t.id === editingId); if (i!==-1) tools[i] = mapRow(row); showToast('✅ Actualizada'); }
     else showToast('❌ Error al actualizar');
   } else {
     row = await dbAddTool(data);
     if (row) {
       tools.unshift(mapRow(row));
-      showToast('✅ Herramienta agregada');
+      showToast('✅ Agregada');
       if (wa.auto && wa.phone && pieces <= STOCK_LIMIT) setTimeout(() => sendWaAlert(row.id), 500);
     } else showToast('❌ Error al guardar');
   }
@@ -957,7 +957,7 @@ async function confirmDelete() {
 // ── Init ─────────────────────────────────────────────────────
 
 async function init() {
-  showLoading('Iniciando CatálogoTools…');
+  showLoading('Iniciando…');
   try {
     const [waConfig, toolList] = await Promise.all([dbLoadWaConfig(), dbLoadTools()]);
     if (waConfig) wa = { ...wa, ...waConfig };
