@@ -333,7 +333,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </main>
 
-<!-- MODAL: WHATSAPP -->
+
 <div class="modal-overlay" id="wa-modal" onclick="closeWaOnOverlay(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -412,7 +412,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
-<!-- MODAL: ADD / EDIT -->
+
 <div class="modal-overlay" id="form-modal" onclick="closeFormOnOverlay(event)">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
@@ -481,7 +481,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
   </div>
 </div>
 
-<!-- DELETE CONFIRM -->
+
 <div class="confirm-modal" id="confirm-modal">
   <div class="confirm-box">
     <div class="confirm-icon">🗑️</div>
@@ -498,15 +498,13 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ============================================================
-//  CONFIGURACIÓN SUPABASE — pon tus datos aquí
-// ============================================================
+
 const SUPABASE_URL = 'https://qsdxxofjgodegypayaoz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzZHh4b2ZqZ29kZWd5cGF5YW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NzMzMjAsImV4cCI6MjA5NjQ0OTMyMH0.1a9ZQFo9Vvw-ODGjUKpfMkh_Mgdp4byRajpdMZziDF4'; // 👈 Copia tu clave desde Supabase > Settings > API > anon public
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ── DB: TOOLS ───────────────────────────────────────────────
+
 
 async function dbLoadTools() {
   try {
@@ -572,9 +570,7 @@ async function dbSaveWaConfig(c) {
   } catch(e) { console.error(e); return false; }
 }
 
-// ============================================================
-//  APP LOGIC
-// ============================================================
+
 
 const ICONS = ['🔧','🔨','⚙️','🪛','🔩','🪚','🔌','💡','🧰','🪜','🔑','🪤','🔬','⚡','🛠️','📐','🗜️','📏','🔭','🧲'];
 const COLORS = ['#f0c040','#e05c3a','#4ecdc4','#a78bfa','#34d399','#f472b6','#60a5fa','#fbbf24'];
@@ -585,7 +581,6 @@ let alertedIds = JSON.parse(localStorage.getItem('ct-alerted') || '[]');
 let editingId = null, deleteId = null;
 let selIcon = ICONS[0], selImgB64 = null, pickerMode = 'icon';
 
-// ── Loading ──────────────────────────────────────────────────
 
 function showLoading(msg='Cargando…') {
   let el = document.getElementById('loading-overlay');
@@ -604,7 +599,7 @@ function hideLoading() {
   if (el) el.style.display = 'none';
 }
 
-// ── Toast ────────────────────────────────────────────────────
+
 
 function showToast(msg, ms=2500) {
   const t = document.getElementById('toast');
@@ -614,7 +609,7 @@ function showToast(msg, ms=2500) {
   t._t = setTimeout(() => t.classList.remove('show'), ms);
 }
 
-// ── Stats ────────────────────────────────────────────────────
+
 
 function updateStats() {
   const total = tools.length;
@@ -626,7 +621,6 @@ function updateStats() {
   document.getElementById('st-empty').textContent = empty;
 }
 
-// ── WA Chip ──────────────────────────────────────────────────
 
 function updateWaChip() {
   const chip  = document.getElementById('wa-status-chip');
@@ -640,7 +634,7 @@ function updateWaChip() {
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────
+
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -657,7 +651,7 @@ function mapRow(r) {
            pieces:r.pieces, stock_limit: r.stock_limit ?? 20, created_at:r.created_at };
 }
 
-// ── Render ───────────────────────────────────────────────────
+
 
 function renderCards() {
   const q   = (document.getElementById('search-input').value || '').toLowerCase().trim();
@@ -737,7 +731,7 @@ function buildCard(t) {
   return card;
 }
 
-// ── WA Alert ─────────────────────────────────────────────────
+
 
 function buildWaMsg(tool) {
   const resp = wa.name ? `Hola ${wa.name},\n` : '';
@@ -753,7 +747,7 @@ function sendWaAlert(id) {
   renderCards();
 }
 
-// ── WA Modal ─────────────────────────────────────────────────
+
 
 function openWaModal() {
   document.getElementById('wa-country').value = wa.country;
@@ -798,7 +792,7 @@ function sendWaTest() {
   window.open(`https://wa.me/${country}${phone}?text=${msg}`, '_blank');
 }
 
-// ── Icon Picker ──────────────────────────────────────────────
+
 
 function buildIconPicker() {
   const c = document.getElementById('icon-selector');
@@ -877,7 +871,7 @@ function readImageFile(f) {
   document.getElementById('img-file-input').value = '';
 }
 
-// ── Form Modal ───────────────────────────────────────────────
+
 
 function resetForm() {
   ['f-name','f-desc','f-entry','f-exit','f-pieces'].forEach(id => document.getElementById(id).value = '');
